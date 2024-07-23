@@ -1,6 +1,7 @@
 {{>partial_header}}
 use crate::models;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 {{#models}}
 {{#model}}
 {{^isEnum}}{{#vendorExtensions.x-rust-has-byte-array}}
@@ -12,7 +13,7 @@ use serde_with::serde_as;
 {{!-- for enum schemas --}}
 {{#isEnum}}
 /// {{{description}}}
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, ToSchema)]
 pub enum {{{classname}}} {
 {{#allowableValues}}
 {{#enumVars}}
@@ -43,7 +44,7 @@ impl Default for {{{classname}}} {
 {{/isEnum}}
 {{!-- for schemas that have a discriminator --}}
 {{#discriminator}}
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, ToSchema)]
 #[serde(tag = "{{{propertyBaseName}}}")]
 pub enum {{{classname}}} {
     {{^oneOf}}
@@ -89,7 +90,7 @@ impl Default for {{classname}} {
 {{^isEnum}}
 {{^discriminator}}
 {{#vendorExtensions.x-rust-has-byte-array}}#[serde_as]
-{{/vendorExtensions.x-rust-has-byte-array}}{{#oneOf.isEmpty}}#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+{{/vendorExtensions.x-rust-has-byte-array}}{{#oneOf.isEmpty}}#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct {{{classname}}} {
 {{#vars}}
     {{#description}}
@@ -121,7 +122,7 @@ impl {{{classname}}} {
 {{#description}}
 /// {{{.}}}
 {{/description}}
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, ToSchema)]
 #[serde(untagged)]
 pub enum {{classname}} {
 {{#composedSchemas.oneOf}}
@@ -144,7 +145,7 @@ impl Default for {{classname}} {
 {{#vars}}
 {{#isEnum}}
 /// {{{description}}}
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, ToSchema)]
 pub enum {{{enumName}}} {
 {{#allowableValues}}
 {{#enumVars}}
